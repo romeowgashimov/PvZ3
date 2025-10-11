@@ -1,5 +1,4 @@
-﻿using _Project.Logic.Implementation.Views;
-using UniRx;
+﻿using UniRx;
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,46 +8,42 @@ namespace _Project.Logic.Core
 {
     public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
     {
-        [field: SerializeField, ReadOnly] public string PlantId { get; private set; }
-        [field: SerializeField] public Image PlantImage { get; protected set; }
         [SerializeField] private Image _outline;
         [SerializeField] private Transform _transform;
         
+        [field: SerializeField, ReadOnly] public string PlantId { get; private set; }
+        [field: SerializeField] public Image PlantImage { get; protected set; }
+        
         private PlantFactory _plantFactory;
+        private CardViewModel _cardViewModel;
         
         public string PlantDescription { get; private set; }
-        public ReactiveProperty<bool> OnClicked { get; private set; } = new(false);
+        public RectTransform RectTransform { get; private set; }
+        
+        public ReactiveProperty<bool> OnClickedProperty = new(false);
+        public ReactiveProperty<bool> OnBeginDragProperty = new(false);
+        public ReactiveProperty<Vector2> OnDragProperty = new();
+        public ReactiveProperty<bool> OnEndDragProperty = new(false);
 
-        public void OnBeginDrag(PointerEventData eventData)
-        {
-            //Plant Call
-        }
+        private void Start() => 
+            RectTransform = GetComponent<RectTransform>();
 
-        public void OnDrag(PointerEventData eventData)
-        {
-            //Plant Call
-        }
+        public void OnBeginDrag(PointerEventData eventData) => 
+            OnBeginDragProperty.Value = !OnBeginDragProperty.Value;
 
-        public void OnEndDrag(PointerEventData eventData)
-        {
-            //Plant Call
-        }
+        public void OnDrag(PointerEventData eventData) => 
+            OnDragProperty.Value = eventData.delta;
 
-        public void OnPointerClick(PointerEventData eventData)
-        {
-            switch (eventData.clickCount)
-            {
-                case 1:
-                    OnClicked.Value = !OnClicked.Value;
-                    _outline.enabled = OnClicked.Value;
-                    break;
-                case 2:
-                    //Animator & Choice Call
-                    break;
-            }
-        }
+        public void OnEndDrag(PointerEventData eventData) => 
+            OnEndDragProperty.Value = !OnEndDragProperty.Value;
 
-        public void Setup(string plantId, Color cardColor, string cardDescription)
+        public void OnPointerClick(PointerEventData eventData) => 
+            OnClickedProperty.Value = !OnClickedProperty.Value;
+
+        public void Setup(CardViewModel cardViewModel) => 
+            _cardViewModel = cardViewModel;
+        
+        public void AddPlant(string plantId, Color cardColor, string cardDescription)
         {
             PlantId = plantId;
             PlantImage.color = cardColor;

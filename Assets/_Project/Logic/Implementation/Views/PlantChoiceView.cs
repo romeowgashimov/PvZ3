@@ -16,28 +16,30 @@ namespace _Project.Logic.Implementation.Views
         [SerializeField] private Transform _content;
         [SerializeField] private Image _currentPlantImage;
         [SerializeField] private TextMeshProUGUI _description;
+        [SerializeField] private Canvas _canvas;
         
+        private CardAnimator _cardAnimator;
+
         private void Start()
         {
-            int lenght = _viewModel.Length;
-            for (int i = 0; i < lenght; i++)
+            _canvas = GetComponentInParent<Canvas>();
+            _cardAnimator = new();
+            _cardAnimator.Setup(_canvas.scaleFactor);
+            
+            for (int i = 0; i < _viewModel.Length; i++)
             {
                 Card card = _viewModel.AddCardFromContainer(i);
                 card.transform.SetParent(_content, false);
 
-                card.OnClicked
+                card.OnClickedProperty
                     .Skip(1)
                     .Throttle(FromMilliseconds(DELAY_FROM_CLICK))
                     .Select(_ => card)
                     .Subscribe(Draw)
                     .AddTo(this);
+                
+                SetupCardAnimator(card);
             }
-        }
-
-        private void Draw(Card tempCard)
-        {
-            _currentPlantImage.color = tempCard.PlantImage.color;
-            _description.text = $"{tempCard.PlantId}\n\n{tempCard.PlantDescription}";
         }
 
         protected override void Block()
@@ -48,6 +50,30 @@ namespace _Project.Logic.Implementation.Views
         protected override void Unblock()
         {
             
+        }
+
+        private void Draw(Card card)
+        {
+            _currentPlantImage.color = card.PlantImage.color;
+            _description.text = $"{card.PlantId}\n\n{card.PlantDescription}";
+        }
+
+        private void SetupCardAnimator(Card card)
+        {
+            card.OnBeginDragProperty
+                .Skip(1)
+                .Subscribe(_ => _cardAnimator.OnBeginDrag(card.OnBeginDragProperty.Value, card.RectTransform))
+                .AddTo(this);
+            
+            card.OnDragProperty
+                .Skip(1)
+                .Subscribe(_cardAnimator.OnDrag)
+                .AddTo(this);
+            
+            card.OnEndDragProperty
+                .Skip(1)
+                .Subscribe(_cardAnimator.OnEndDrag)
+                .AddTo(this);
         }
     }
 }

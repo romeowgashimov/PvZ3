@@ -12,7 +12,7 @@ namespace _Project.Logic.Core
         public Card Create(PlantConfig card)
         {
             Card instance = Instantiate(_prefab);
-            instance.Setup(card.PlantId, card.Color, card.Description);
+            instance.AddPlant(card.PlantId, card.Color, card.Description);
             
             return instance;
         }

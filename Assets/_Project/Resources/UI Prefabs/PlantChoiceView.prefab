@@ -218,6 +218,7 @@ MonoBehaviour:
   _content: {fileID: 15310764850718381}
   _currentPlantImage: {fileID: 3224507073583841016}
   _description: {fileID: 686435385327430854}
+  _canvas: {fileID: 0}
 --- !u!114 &584105227693668796
 MonoBehaviour:
   m_ObjectHideFlags: 0
