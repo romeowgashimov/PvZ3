@@ -14,16 +14,15 @@ namespace _Project.Logic.Core
         [field: SerializeField, ReadOnly] public string PlantId { get; private set; }
         [field: SerializeField] public Image PlantImage { get; protected set; }
         
-        private PlantFactory _plantFactory;
         private CardViewModel _cardViewModel;
         
         public string PlantDescription { get; private set; }
         public RectTransform RectTransform { get; private set; }
         
-        public ReactiveProperty<bool> OnClickedProperty = new(false);
-        public ReactiveProperty<bool> OnBeginDragProperty = new(false);
-        public ReactiveProperty<Vector2> OnDragProperty = new();
-        public ReactiveProperty<bool> OnEndDragProperty = new(false);
+        [field: SerializeField] public ReactiveProperty<bool> OnClickedProperty { get; private set; } = new(false);
+        [field: SerializeField] public ReactiveProperty<bool> OnBeginDragProperty = new(false);
+        [field: SerializeField] public ReactiveProperty<Vector2> OnDragProperty = new();
+        [field: SerializeField] public ReactiveProperty<bool> OnEndDragProperty = new(false);
 
         private void Start() => 
             RectTransform = GetComponent<RectTransform>();
@@ -49,5 +48,8 @@ namespace _Project.Logic.Core
             PlantImage.color = cardColor;
             PlantDescription = cardDescription;
         }
+
+        public void DrawOutline(bool enable) => 
+            _outline.enabled = enable;
     }
 }

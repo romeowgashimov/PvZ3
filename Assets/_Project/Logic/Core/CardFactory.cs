@@ -1,18 +1,24 @@
-﻿using static UnityEngine.Object;
+﻿using UnityEngine;
+using UnityEngine.UI;
+using static UnityEngine.Object;
 
 namespace _Project.Logic.Core
 {
     public class CardFactory
     {
-        private readonly Card _prefab;
+        private readonly GameObject _prefab;
         
-        public CardFactory(Card prefab) => 
+        public CardFactory(GameObject prefab) => 
             _prefab = prefab;
 
-        public Card Create(PlantConfig card)
+        public GameObject Create(PlantConfig card)
         {
-            Card instance = Instantiate(_prefab);
-            instance.AddPlant(card.PlantId, card.Color, card.Description);
+            GameObject instance = Instantiate(_prefab);
+            Card child = instance.GetComponentInChildren<Card>();
+            Image background = instance.GetComponentInChildren<Image>();
+            
+            child.AddPlant(card.PlantId, card.Color, card.Description);
+            background.color = card.Color * Color.gray;
             
             return instance;
         }

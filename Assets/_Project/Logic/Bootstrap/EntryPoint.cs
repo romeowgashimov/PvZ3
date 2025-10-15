@@ -7,18 +7,22 @@ namespace _Project.Logic.Bootstrap
 {
     public class EntryPoint : IInitializable, ITickable
     {
-        private readonly WindowsFactory _windowsFactory;
-        private readonly WindowsSwitcher _windowsSwitcher;
+        private readonly WindowsSystem _windowsSystem;
+        private DiContainer _diContainer;
         
-        public EntryPoint(WindowsFactory windowsFactory, WindowsSwitcher windowsSwitcher)
+        public EntryPoint(WindowsSystem windowsSystem, DiContainer diContainer)
         {
-            _windowsFactory = windowsFactory;
-            _windowsSwitcher = windowsSwitcher;
+            _windowsSystem = windowsSystem;
+            _diContainer = diContainer;
         }
         
         public void Initialize()
         {
-            _windowsSwitcher.Switch<PlantChoiceView, PlantChoiceViewModel>();
+            CurrentPlantsView currentPlantsView  = _windowsSystem.CreateAndShow<CurrentPlantsView, CurrentPlantsViewModel>();
+            CardAnimator cardAnimator = new(currentPlantsView.Parent);
+            _diContainer.Bind<CardAnimator>().FromInstance(cardAnimator);
+            
+            PlantChoiceView plantChoiceView = _windowsSystem.CreateAndShow<PlantChoiceView, PlantChoiceViewModel>();
         }
 
         public void Tick()
