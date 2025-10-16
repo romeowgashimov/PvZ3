@@ -1,47 +1,40 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 using static Cysharp.Threading.Tasks.UniTask;
-using static UnityEngine.Object;
-using static UnityEngine.Resources;
 
 namespace _Project.Logic.Core
 {
     public class CardAnimator
     {
-        private Transform _currentCardsView;
-        private Transform _nextTransform;
+        private Dictionary<Transform, bool> _nextTransform;
         private float _duration;
         private Vector3 _nextPosition;
 
-        public CardAnimator(Transform currentCardsView, float  duration = 1f)
+        public CardAnimator(Dictionary<Transform, bool> nextTransform, float duration = .4f)
         {
-            _currentCardsView = currentCardsView;
+            _nextTransform = nextTransform;
             _duration = duration;
-        }
-
-        public void InitializeNextPosition()
-        {
-            _nextTransform = Load<Transform>($"nextPosition");
-            _nextTransform = Instantiate(_nextTransform, _currentCardsView, true);
         }
 
         public UniTask Animate(Transform card, Transform cardView = null)
         {
             if (cardView != null)
             {
-                card.SetParent(card.transform.parent.parent.parent);
+                _nextTransform[card.transform.parent] = false;
+                
+                card.SetParent(card.transform.root);
                 return WaitForSeconds(card.DOMove(cardView.position, _duration).Duration());
             }
-
-            card.SetParent(card.transform.parent.parent.parent.parent);
-            _nextPosition = _nextTransform.position;
-            _nextTransform.SetParent(null);
             
+            KeyValuePair<Transform, bool> keyValuePair = _nextTransform.First(x => !x.Value);
+            _nextTransform[keyValuePair.Key] = true;
+            _nextPosition = keyValuePair.Key.position;
+            
+            card.SetParent(card.transform.root);
             return WaitForSeconds(card.DOMove(_nextPosition, _duration).Duration());
         }
-
-        public void Reset() => 
-            _nextTransform.SetParent(_currentCardsView);
     }
 }

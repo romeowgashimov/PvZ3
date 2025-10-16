@@ -11,7 +11,5 @@ namespace _Project.Logic.Implementation.ViewModels
 
         public CurrentPlantsViewModel(CurrentPlants currentPlants) => 
             _currentPlants = currentPlants;
-
-        
     }
 }

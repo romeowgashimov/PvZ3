@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using _Project.Logic.Implementation.Views;
+using UnityEngine;
 using Zenject;
 
 namespace _Project.Logic.Core
@@ -14,7 +15,7 @@ namespace _Project.Logic.Core
             _instantiator = instantiator;
         }
 
-        public Window<TViewModel> Create<TView, TViewModel>() where TView : Window<TViewModel>
+        public TView Create<TView, TViewModel>() where TView : Window<TViewModel>
         {
             TView window = _instantiator.InstantiatePrefabResourceForComponent<TView>($"UI Prefabs/{typeof(TView).Name}", _canvas); 
             TViewModel viewModel = _instantiator.Instantiate<TViewModel>();

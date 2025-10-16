@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using _Project.Logic.Core;
 using UniRx;
 using UnityEngine;
@@ -25,7 +26,6 @@ namespace _Project.Logic.Implementation.ViewModels
             _plantsContainer = plantsContainer;
             _currentPlants = currentPlants;
             _cardAnimator = cardAnimator;
-            _cardAnimator.InitializeNextPosition();
         }
 
         public (Transform, Card) AddCardFromContainer(int index)
@@ -38,7 +38,7 @@ namespace _Project.Logic.Implementation.ViewModels
                 .Skip(1)
                 .Where(_ => card == _selectedCard.Value)
                 .Select(_ => card)
-                .Subscribe(AddCard)
+                .Subscribe(ControlCard)
                 .AddTo(_disposable);
             
             card.OnClickedProperty
@@ -50,28 +50,32 @@ namespace _Project.Logic.Implementation.ViewModels
             return (instance.transform, card);
         }
 
-        private async void AddCard(Card card)
+        private async void ControlCard(Card card)
         {
             if (!_currentPlants.Cards.Contains(card))
-            {
-                await _cardAnimator.Animate(card.transform);
-
-                _currentPlants.AddCard(card);
-
-                _cardAnimator.Reset();
-            }
+                await AddAndAnimateCard(card);
             else
+                await RemoveAndAnimateCard(card);
+        }
+
+        private async Task AddAndAnimateCard(Card card)
+        {
+            if (_currentPlants.TryAddCard(card)) 
+                await _cardAnimator.Animate(card.transform);
+        }
+
+        private async Task RemoveAndAnimateCard(Card card)
+        {
+            if (_currentPlants.TryRemoveCard(card))
             {
                 await _cardAnimator.Animate(card.transform, _cardsPositions[card.PlantId]);
                 
-                _currentPlants.RemoveCard(card);
-                card.transform.SetParent(_cardsPositions[card.PlantId], false);
+                card.transform.SetParent(_cardsPositions[card.PlantId]);
                 card.transform.localPosition = Vector3.zero;
-                
-                _cardAnimator.Reset();
             }
+            
         }
-        
+
         private void ChangeSelectedCard(Card card)
         {
             if (card == _selectedCard.Value)
