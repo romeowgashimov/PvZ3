@@ -1,27 +1,29 @@
 ﻿using _Project.Logic.Implementation.ViewModels;
 using _Project.Logic.Implementation.Views;
-using Zenject;
+using static Cysharp.Threading.Tasks.UniTask;
 
 namespace _Project.Logic.Core
 {
     public class ChoiceWindowsSystem : WindowsSystem
     {
-        private DiContainer _diContainer;
+        private const float DELAY_FOR_LOADING_CARD_POSITIONS = .25f;
 
-        public ChoiceWindowsSystem(WindowsFactory windowsFactory, DiContainer diContainer)
+        public ChoiceWindowsSystem(WindowsFactory windowsFactory)
         {
-            _diContainer = diContainer;
             _windowsFactory = windowsFactory;
         }
-        
-        public override void Activate()
+
+        public override async void Activate()
         {
             CurrentPlantsView currentPlantsView  = _windowsFactory.Create<CurrentPlantsView, CurrentPlantsViewModel>();
-            CardAnimator cardAnimator = new(new(currentPlantsView.Positions));
-            _diContainer.Bind<CardAnimator>().FromInstance(cardAnimator);
-            
+
             PlantChoiceView plantChoiceView = _windowsFactory.Create<PlantChoiceView, PlantChoiceViewModel>();
+
+            await WaitForSeconds(DELAY_FOR_LOADING_CARD_POSITIONS);
             
+            CardAnimator cardAnimator = new(new(currentPlantsView.Positions), new(plantChoiceView.CardsPositions));
+            
+            plantChoiceView.Setup(cardAnimator);
             currentPlantsView.Show();
             plantChoiceView.Show();
         }

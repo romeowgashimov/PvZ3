@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 using static Cysharp.Threading.Tasks.UniTask;
@@ -9,32 +8,40 @@ namespace _Project.Logic.Core
 {
     public class CardAnimator
     {
-        private Dictionary<Transform, bool> _nextTransform;
+        private Dictionary<Transform, bool> _currentPlantsViewPos;
+        private Dictionary<string, Transform> _cardsInCurrentPlantsView;
+        private Dictionary<string, Transform> _cardsInChoicePlantsView;
         private float _duration;
-        private Vector3 _nextPosition;
 
-        public CardAnimator(Dictionary<Transform, bool> nextTransform, float duration = .4f)
+        public CardAnimator(Dictionary<Transform, bool> currentPlantsViewPos,
+                            Dictionary<string, Transform> cardsInChoicePlantsView,
+                            float duration = .4f)
         {
-            _nextTransform = nextTransform;
+            _currentPlantsViewPos = currentPlantsViewPos;
+            _cardsInChoicePlantsView = cardsInChoicePlantsView;
+            _cardsInCurrentPlantsView = new();
             _duration = duration;
         }
 
-        public UniTask Animate(Transform card, Transform cardView = null)
+        public async void Animate(Card card)
         {
-            if (cardView != null)
+            if (_cardsInCurrentPlantsView.Remove(card.PlantId, out Transform currentPosition))
             {
-                _nextTransform[card.transform.parent] = false;
-                
-                card.SetParent(card.transform.root);
-                return WaitForSeconds(card.DOMove(cardView.position, _duration).Duration());
+                _currentPlantsViewPos[currentPosition] = false;
+                currentPosition = _cardsInChoicePlantsView[card.PlantId];
+            }
+            else
+            {
+                currentPosition = _currentPlantsViewPos.First(x => !x.Value).Key;
+                _currentPlantsViewPos[currentPosition] = true;
+                _cardsInCurrentPlantsView.Add(card.PlantId, currentPosition);
             }
             
-            KeyValuePair<Transform, bool> keyValuePair = _nextTransform.First(x => !x.Value);
-            _nextTransform[keyValuePair.Key] = true;
-            _nextPosition = keyValuePair.Key.position;
+            card.transform.SetParent(card.transform.root);
+            await WaitForSeconds(card.transform.DOMove(currentPosition.position, _duration).Duration());
             
-            card.SetParent(card.transform.root);
-            return WaitForSeconds(card.DOMove(_nextPosition, _duration).Duration());
+            card.transform.SetParent(currentPosition);
+            card.transform.localPosition = Vector3.zero;
         }
     }
 }

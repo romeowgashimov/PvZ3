@@ -132,7 +132,7 @@ RectTransform:
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 800, y: 800}
-  m_Pivot: {x: 0.7, y: 0.5}
+  m_Pivot: {x: 0.7, y: 1}
 --- !u!222 &4496454874428526728
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -232,7 +232,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Logic::_Project.Logic.Implementation.WindowAnimators.SlideUpWindowAnimator
   _rectTransform: {fileID: 7530610740193484020}
   _duration: 1
-  _endValueForShow: 0
+  _endValueForShow: 3.6
   _endValueForHide: -4
 --- !u!1 &7171348334616281892
 GameObject:

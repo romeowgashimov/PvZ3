@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using _Project.Logic.Core;
 using UniRx;
 using UnityEngine;
@@ -15,17 +14,18 @@ namespace _Project.Logic.Implementation.ViewModels
         private CardFactory _cardFactory;
         private CompositeDisposable _disposable = new();
         private ReactiveProperty<Card> _selectedCard = new();
-        private CardAnimator _cardAnimator;
+        private ReactiveProperty<(Card, bool)> _cardIn = new();
         private Dictionary<string, Transform> _cardsPositions = new();
-        
+
+        public IReadOnlyDictionary<string, Transform> CardsPositions => _cardsPositions;
+        public IReadOnlyReactiveProperty<(Card card, bool add)> CardIn => _cardIn;
         public int Length => _plantsContainer.Plants.Length;
 
-        public PlantChoiceViewModel(GameObject cardPrefab, PlantsContainer plantsContainer, CurrentPlants currentPlants, CardAnimator cardAnimator)
+        public PlantChoiceViewModel(GameObject cardPrefab, PlantsContainer plantsContainer, CurrentPlants currentPlants)
         {
             _cardFactory = new(cardPrefab);
             _plantsContainer = plantsContainer;
             _currentPlants = currentPlants;
-            _cardAnimator = cardAnimator;
         }
 
         public (Transform, Card) AddCardFromContainer(int index)
@@ -50,30 +50,15 @@ namespace _Project.Logic.Implementation.ViewModels
             return (instance.transform, card);
         }
 
-        private async void ControlCard(Card card)
+        private void ControlCard(Card card)
         {
-            if (!_currentPlants.Cards.Contains(card))
-                await AddAndAnimateCard(card);
+            bool condition = _currentPlants.Cards.Contains(card);
+            if (!condition)
+                _currentPlants.TryAddCard(card);
             else
-                await RemoveAndAnimateCard(card);
-        }
-
-        private async Task AddAndAnimateCard(Card card)
-        {
-            if (_currentPlants.TryAddCard(card)) 
-                await _cardAnimator.Animate(card.transform);
-        }
-
-        private async Task RemoveAndAnimateCard(Card card)
-        {
-            if (_currentPlants.TryRemoveCard(card))
-            {
-                await _cardAnimator.Animate(card.transform, _cardsPositions[card.PlantId]);
-                
-                card.transform.SetParent(_cardsPositions[card.PlantId]);
-                card.transform.localPosition = Vector3.zero;
-            }
+                _currentPlants.TryRemoveCard(card);
             
+            _cardIn.Value = (card, condition);
         }
 
         private void ChangeSelectedCard(Card card)

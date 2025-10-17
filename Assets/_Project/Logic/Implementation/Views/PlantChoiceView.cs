@@ -1,4 +1,5 @@
-﻿using _Project.Logic.Core;
+﻿using System.Collections.Generic;
+using _Project.Logic.Core;
 using _Project.Logic.Implementation.ViewModels;
 using UniRx;
 using TMPro;
@@ -18,9 +19,13 @@ namespace _Project.Logic.Implementation.Views
         [SerializeField] private TextMeshProUGUI _description;
         
         private CardAnimator _cardAnimator;
+        
+        public IReadOnlyDictionary<string, Transform> CardsPositions;
 
         private void Start()
         {
+            CardsPositions = _viewModel.CardsPositions;
+            
             for (int i = 0; i < _viewModel.Length; i++)
             {
                 (Transform cardParentTransform, Card card) = _viewModel.AddCardFromContainer(i);
@@ -43,6 +48,16 @@ namespace _Project.Logic.Implementation.Views
         protected override void Unblock()
         {
             
+        }
+
+        public void Setup(CardAnimator cardAnimator)
+        {
+            _cardAnimator = cardAnimator;
+            
+            _viewModel.CardIn
+                .Skip(1)
+                .Subscribe(x =>_cardAnimator.Animate(x.card))
+                .AddTo(this);
         }
 
         private void Draw(Card card)
