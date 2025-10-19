@@ -9,11 +9,13 @@ namespace _Project.Logic.Core
 
         protected T _viewModel;
 
-        private void Awake()
+        protected void Awake()
         {
+            gameObject.SetActive(false);
+            
             if (TryGetComponent(out _windowAnimator))
                 return;
-            
+
             _windowAnimator = gameObject.AddComponent<DefaultWindowAnimator>();
         }
         

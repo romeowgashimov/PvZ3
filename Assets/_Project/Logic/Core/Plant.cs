@@ -1,6 +1,10 @@
 ﻿namespace _Project.Logic.Core
 {
-    internal class Plant
+    public class Plant : Useable
     {
+        public override Useable Use(Slot slot)
+        {
+            return this;
+        }
     }
 }

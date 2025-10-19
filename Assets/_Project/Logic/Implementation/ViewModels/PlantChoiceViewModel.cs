@@ -19,6 +19,7 @@ namespace _Project.Logic.Implementation.ViewModels
 
         public IReadOnlyDictionary<string, Transform> CardsPositions => _cardsPositions;
         public IReadOnlyReactiveProperty<(Card card, bool add)> CardIn => _cardIn;
+        public bool ReadyForStart => _currentPlants.Cards.Count == _currentPlants.CardsCount;
         public int Length => _plantsContainer.Plants.Length;
 
         public PlantChoiceViewModel(GameObject cardPrefab, PlantsContainer plantsContainer, CurrentPlants currentPlants)
@@ -71,6 +72,13 @@ namespace _Project.Logic.Implementation.ViewModels
             _selectedCard.Value = card;
         }
 
+        public void LoadPlants()
+        {
+            Dispose();
+            _selectedCard.Value?.DrawOutline(false);
+            _currentPlants.LoadPlants();
+        }
+        
         public void Dispose() => 
             _disposable.Dispose();
     }

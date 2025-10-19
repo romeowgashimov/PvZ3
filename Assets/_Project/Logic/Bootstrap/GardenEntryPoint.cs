@@ -1,4 +1,5 @@
 ﻿using _Project.Logic.Core;
+using UnityEngine;
 using Zenject;
 
 namespace _Project.Logic.Bootstrap
@@ -6,20 +7,31 @@ namespace _Project.Logic.Bootstrap
     public class GardenEntryPoint : IInitializable, ITickable
     {
         private readonly WindowsSystem _windowsSystem;
+        private SlotsSystem _slotsSystem;
+        private bool _isPaused = true;
+
+        public void Pause() => _isPaused = true;
+        public void Unpause() => _isPaused = false;
         
-        public GardenEntryPoint(WindowsSystem windowsSystem)
+        public GardenEntryPoint(WindowsSystem windowsSystem, SlotsSystem slotsSystem)
         {
             _windowsSystem = windowsSystem;
+            _slotsSystem = slotsSystem;
+            _windowsSystem.Setup(this);
         }
-        
+
         public void Initialize()
         {
-            _windowsSystem.Activate();
+            _slotsSystem.Prepare();
+            _windowsSystem.Prepare();
         }
 
         public void Tick()
         {
-            
+            if (!_isPaused)
+            {
+                Debug.Log("GardenEntryPoint Tick");
+            }
         }
     }
 }

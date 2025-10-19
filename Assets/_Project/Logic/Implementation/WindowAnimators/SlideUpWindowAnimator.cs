@@ -10,7 +10,6 @@ namespace _Project.Logic.Implementation.WindowAnimators
     public class SlideUpWindowAnimator : WindowAnimator
     {
         [SerializeField] private RectTransform _rectTransform;
-        [SerializeField] private float _duration = 1f;
         [SerializeField, Range(-10, 10)] private float _endValueForShow = 4f;
         [SerializeField, Range(-10, 10)] private float _endValueForHide = -4f;
 
@@ -20,13 +19,13 @@ namespace _Project.Logic.Implementation.WindowAnimators
         public override UniTask Show()
         {
             gameObject.SetActive(true);
-            return WaitForSeconds(_rectTransform.DOMoveY(_endValueForShow, _duration).Duration());
+            return WaitForSeconds(_rectTransform.DOMoveY(_endValueForShow, Duration).Duration());
         }
 
-        public override UniTask Hide()
+        public override async UniTask Hide()
         {
+            await WaitForSeconds(_rectTransform.DOMoveY(_endValueForHide, Duration).Duration());
             gameObject.SetActive(false);
-            return WaitForSeconds(_rectTransform.DOMoveY(_endValueForHide, _duration).Duration());
         }
     }
 }

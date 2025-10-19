@@ -5,6 +5,7 @@ using UniRx;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static System.Threading.Tasks.Task;
 using static System.TimeSpan;
 
 namespace _Project.Logic.Implementation.Views
@@ -12,18 +13,25 @@ namespace _Project.Logic.Implementation.Views
     public class PlantChoiceView : Window<PlantChoiceViewModel>
     {
         private const float DELAY_FROM_CLICK = 75f;
-        
+        private const double WAIT_FOR_VIEWMODEL_SETUP = 0.01f;
+
         [SerializeField] private Button _startButton;
         [SerializeField] private Transform _content;
         [SerializeField] private Image _currentPlantImage;
         [SerializeField] private TextMeshProUGUI _description;
-        
-        private CardAnimator _cardAnimator;
-        
-        public IReadOnlyDictionary<string, Transform> CardsPositions;
 
-        private void Start()
+        private CardAnimator _cardAnimator;
+        private ChoiceWindowsSystem _rootSystem;
+
+        public IReadOnlyDictionary<string, Transform> CardsPositions;
+        public float DurationForAnimation => _windowAnimator.Duration;
+        
+        public new async void Awake()
         {
+            base.Awake();
+            
+            await Delay(FromSeconds(WAIT_FOR_VIEWMODEL_SETUP));
+            
             CardsPositions = _viewModel.CardsPositions;
             
             for (int i = 0; i < _viewModel.Length; i++)
@@ -38,6 +46,16 @@ namespace _Project.Logic.Implementation.Views
                     .Subscribe(Draw)
                     .AddTo(this);
             }
+            
+            _startButton.OnClickAsObservable()
+                .Where(_ => _viewModel.ReadyForStart)
+                .Subscribe(_ => _rootSystem.Activate())
+                .AddTo(this);
+            
+            _startButton.OnClickAsObservable()
+                .Where(_ => _viewModel.ReadyForStart)
+                .Subscribe(_ => _viewModel.LoadPlants())
+                .AddTo(this);
         }
 
         protected override void Block()
@@ -59,6 +77,9 @@ namespace _Project.Logic.Implementation.Views
                 .Subscribe(x =>_cardAnimator.Animate(x.card))
                 .AddTo(this);
         }
+
+        public void Setup(ChoiceWindowsSystem rootSystem) => 
+            _rootSystem = rootSystem;
 
         private void Draw(Card card)
         {

@@ -12,7 +12,7 @@ namespace _Project.Logic.Implementation.Views
 
         public IReadOnlyDictionary<Transform, bool> Positions => _positions;
         
-        public void Awake()
+        public new void Awake()
         {
             foreach (RectTransform position in _arrayPositions)
                 _positions.Add(position, false);
