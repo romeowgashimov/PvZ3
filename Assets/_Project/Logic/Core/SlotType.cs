@@ -1,4 +1,4 @@
-﻿namespace _Project.Logic.Bootstrap
+﻿namespace _Project.Logic.Core
 {
     public enum SlotType
     {

@@ -12,14 +12,17 @@ namespace _Project.Logic.Bootstrap
         [SerializeField] private SlotsRepository _slotsRepository;
         [SerializeField] private SlotsContainer _slotsContainer;
         [SerializeField] private Transform _garden;
+        [SerializeField] private ZombieSpawnRepository _zombieSpawnRepository;
+        [SerializeField] private ZombiesContainer _zombiesContainer;
         //[SerializeField] private LevelConfig _levelConfig;
         //[SerializeField] private playerConfig _playerConfig;
         
         public override void InstallBindings()
         {
+            Container.Bind<ZombieRepository>().AsSingle();
             Container.Bind<WindowsFactory>().AsSingle().WithArguments(_canvas);
             Container.Bind<SlotsSystem>().AsSingle().WithArguments(_slotsRepository, _slotsContainer);
-            
+            Container.Bind<ZombieSystem>().AsSingle().WithArguments(_zombieSpawnRepository, _zombiesContainer, _canvas);
             
             //if (levelConfig.OtherSettings == ChoicePlantLevel)
             Container.Bind<WindowsSystem>().To<ChoiceWindowsSystem>().AsSingle().WithArguments(_garden);

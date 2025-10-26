@@ -2,30 +2,20 @@
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using static _Project.Logic.Bootstrap.SlotType;
+using static _Project.Logic.Core.SlotType;
 
 namespace _Project.Logic.Core
 {
-    public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+    public class Slot : MonoBehaviour, IDropHandler
     {
         [SerializeField, ReadOnly] private SlotType _slotType = Free;
         private Useable _current;
-        
-        public void OnBeginDrag(PointerEventData eventData)
+
+        public void OnDrop(PointerEventData eventData)
         {
             
         }
 
-        public void OnDrag(PointerEventData eventData)
-        {
-            
-        }
-
-        public void OnEndDrag(PointerEventData eventData)
-        {
-            
-        }
-        
         public void ChangeType(SlotConfig slotConfig)
         {
             if (slotConfig.SlotType != Free && slotConfig.SlotType != NonFree)
