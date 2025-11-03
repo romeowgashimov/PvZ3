@@ -17,7 +17,7 @@ namespace _Project.Logic.Core
             Card child = instance.GetComponentInChildren<Card>();
             Image background = instance.GetComponentInChildren<Image>();
             
-            child.AddPlant(card.PlantId, card.Color, card.Description);
+            child.SetupPlant(card.Id, card.Name, card.Color, card.Description);
             background.color = card.Color * Color.gray;
             
             return instance;

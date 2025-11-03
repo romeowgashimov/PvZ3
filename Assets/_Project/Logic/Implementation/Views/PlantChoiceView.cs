@@ -84,7 +84,7 @@ namespace _Project.Logic.Implementation.Views
         private void Draw(Card card)
         {
             _currentPlantImage.color = card.PlantImage.color;
-            _description.text = $"{card.PlantId}\n\n{card.PlantDescription}";
+            _description.text = $"{card.PlantName}\n\n{card.PlantDescription}";
         }
     }
 }

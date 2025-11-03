@@ -4,38 +4,37 @@ namespace _Project.Logic.Core
 {
     public class ZombiePool
     {
-        //Словарик лучше?
+        private const int COUNT_INIT_ZOMBIES = 5;
+        
         private Stack<Zombie>[] _zombiePool;
         private string[] _zombiesIds;
         private ZombieFactory _zombieFactory;
 
-        public ZombiePool(params int[] counts)
+        public ZombiePool((string zombiesId, int count)[] zombiesInScene)
         {
             _zombieFactory = new();
-            _zombiesIds = new string[counts.Length];
-            _zombiePool = new Stack<Zombie>[counts.Length];
-            for (int i = 0; i < counts.Length; i++)
-                _zombiePool[i] = new(counts[i] / 2);
+            _zombiesIds = new string[zombiesInScene.Length];
+            _zombiePool = new Stack<Zombie>[zombiesInScene.Length];
+            for (int i = 0; i < zombiesInScene.Length; i++)
+            {
+                _zombiePool[i] = new(zombiesInScene[i].count / 2);
+                _zombiesIds[i] = zombiesInScene[i].zombiesId;
+            }
         }
 
-        public void Prepare(params string[] zombiesIds)
+        public void Prepare()
         {
-            for (int i = 0; i < zombiesIds.Length; i++)
-            {
-                _zombiesIds[i] = zombiesIds[i];
-                //Надо как-то указывать начальное количество зомби на начальном экране,
-                //их должно быть мало, но по-разному мало
-                for (int j = 0; j < 5; j++)
+            for (int i = 0; i < _zombiesIds.Length; i++)
+                for (int j = 0; j < COUNT_INIT_ZOMBIES; j++)
                 {
-                    Zombie zombie = _zombieFactory.Create(zombiesIds[i]);
+                    Zombie zombie = _zombieFactory.Create(_zombiesIds[i]);
                     _zombiePool[i].Push(zombie);
                 }
-            }
         }
 
         public Zombie Get(int typeZombie)
         {
-            Zombie zombie = _zombiePool[typeZombie].Peek() != null 
+            Zombie zombie = _zombiePool[typeZombie].Count != 0 
                 ? _zombiePool[typeZombie].Pop() 
                 : _zombieFactory.Create(_zombiesIds[typeZombie]);
 

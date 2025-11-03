@@ -2,8 +2,8 @@
 {
     public enum Line
     {
-        First = 1,
-        Second = 2,
+        First = 0,
+        Second = 1,
         Third,
         Fourth,
         Fifth,

@@ -1,6 +1,7 @@
 ﻿namespace _Project.Logic.Core
 {
-    public class PlantFactory
+    public class ZombieSunHandler : Zombie
     {
+    
     }
 }

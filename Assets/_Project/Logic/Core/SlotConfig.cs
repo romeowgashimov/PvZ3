@@ -9,6 +9,6 @@ namespace _Project.Logic.Core
     {
         [field: SerializeField] public int SlotIndex { get; private set; }
         [field: SerializeField] public SlotType SlotType { get; private set; }
-        [field: SerializeField] public Useable Useable { get; private set; }
+        [field: SerializeField] public Plant Useable { get; private set; }
     }
 }

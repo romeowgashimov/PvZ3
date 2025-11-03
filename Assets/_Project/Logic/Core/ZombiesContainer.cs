@@ -6,5 +6,7 @@ namespace _Project.Logic.Core
     public class ZombiesContainer : ScriptableObject
     {
         [field: SerializeField] public ZombieConfig[] ZombieConfigs { get; private set; }
+        [field: SerializeField] public float TimeLevelInMinuts { get; private set; }
+        [field: SerializeField] public int WaveCount { get; private set; }
     }
 }

@@ -34,6 +34,7 @@ namespace _Project.Logic.Core
             _plantChoiceView = _windowsFactory.Create<PlantChoiceView, PlantChoiceViewModel>();
             _plantChoiceView.Setup(this);
             
+            //Вот это не очень хорошо
             await Delay(FromSeconds(DELAY_FOR_LOADING_CARD_POSITIONS));
             
             CardAnimator cardAnimator = new(new(_currentPlantsView.Positions), new(_plantChoiceView.CardsPositions));

@@ -25,16 +25,16 @@ namespace _Project.Logic.Core
 
         public async void Animate(Card card)
         {
-            if (_cardsInCurrentPlantsView.Remove(card.PlantId, out Transform currentPosition))
+            if (_cardsInCurrentPlantsView.Remove(card.PlantName, out Transform currentPosition))
             {
                 _currentPlantsViewPos[currentPosition] = false;
-                currentPosition = _cardsInChoicePlantsView[card.PlantId];
+                currentPosition = _cardsInChoicePlantsView[card.PlantName];
             }
             else
             {
                 currentPosition = _currentPlantsViewPos.First(x => !x.Value).Key;
                 _currentPlantsViewPos[currentPosition] = true;
-                _cardsInCurrentPlantsView.Add(card.PlantId, currentPosition);
+                _cardsInCurrentPlantsView.Add(card.PlantName, currentPosition);
             }
             
             card.transform.SetParent(card.transform.root);

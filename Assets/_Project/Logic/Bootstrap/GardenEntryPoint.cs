@@ -1,4 +1,6 @@
-﻿using _Project.Logic.Core;
+﻿using System.Collections.Generic;
+using _Project.Logic.Core;
+using UnityEngine;
 using Zenject;
 
 namespace _Project.Logic.Bootstrap
@@ -8,16 +10,21 @@ namespace _Project.Logic.Bootstrap
         private readonly WindowsSystem _windowsSystem;
         private readonly SlotsSystem _slotsSystem;
         private readonly ZombieSystem _zombieSystem;
+        private WaveCounter _waveCounter;
+        private ZombieRepository _zombieRepository;
         private bool _isPaused = true;
 
         public void Pause() => _isPaused = true;
         public void Unpause() => _isPaused = false;
         
-        public GardenEntryPoint(WindowsSystem windowsSystem, SlotsSystem slotsSystem, ZombieSystem zombieSystem)
+        public GardenEntryPoint(WindowsSystem windowsSystem, SlotsSystem slotsSystem, 
+            ZombieSystem zombieSystem, WaveCounter waveCounter, ZombieRepository zombieRepository)
         {
             _windowsSystem = windowsSystem;
             _slotsSystem = slotsSystem;
             _zombieSystem = zombieSystem;
+            _waveCounter = waveCounter;
+            _zombieRepository = zombieRepository;
 
             _windowsSystem.Setup(this);
         }
@@ -33,7 +40,10 @@ namespace _Project.Logic.Bootstrap
         {
             if (!_isPaused)
             {
-
+                _waveCounter.Run();
+                foreach (KeyValuePair<Line, List<Zombie>> line in _zombieRepository.ZombiesInScene)
+                    foreach (Zombie zombie in line.Value)
+                        zombie.Run();
             }
         }
     }

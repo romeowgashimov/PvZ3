@@ -33,7 +33,7 @@ namespace _Project.Logic.Implementation.ViewModels
         {
             GameObject instance = _cardFactory.Create(_plantsContainer.Plants[index]);
             Card card = instance.GetComponentInChildren<Card>();
-            _cardsPositions.Add(card.PlantId, instance.transform);
+            _cardsPositions.Add(card.PlantName, instance.transform);
             
             card.OnClickedProperty
                 .Skip(1)

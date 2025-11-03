@@ -1,27 +1,45 @@
-﻿using _Project.Logic.Bootstrap;
-using Unity.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
 using static _Project.Logic.Core.SlotType;
 
 namespace _Project.Logic.Core
 {
     public class Slot : MonoBehaviour, IDropHandler
     {
-        [SerializeField, ReadOnly] private SlotType _slotType = Free;
-        private Useable _current;
+        [field: SerializeField] public SlotType SlotType { get; private set; } = Free;
+        [field: SerializeField] public Line Line { get; private set; }
+        [field: SerializeField] public Plant Current { get; private set; }
+
+        public void ChangeCurrentPlant(Plant plant, SlotType slotType)
+        {
+            Current = plant;
+            SlotType = slotType;
+            
+            if (Current == null)
+                SlotType = Free;
+        }
 
         public void OnDrop(PointerEventData eventData)
         {
+            if (SlotType == NonFree) 
+                return;
             
+            IUseable useable = eventData.pointerDrag.GetComponent<IUseable>();
+            useable.Use(this);
         }
 
-        public void ChangeType(SlotConfig slotConfig)
+        public void Setup(SlotConfig slotConfig, Line line)
         {
-            if (slotConfig.SlotType != Free && slotConfig.SlotType != NonFree)
-                _current = slotConfig.Useable;
+            if (slotConfig != null)
+                if (slotConfig.SlotType != Free && slotConfig.SlotType != NonFree)
+                {
+                    SlotType = slotConfig.SlotType;
+                    Current = slotConfig.Useable;
+                    Current.transform.position = transform.position;
+                }
             
-            _slotType = slotConfig.SlotType;
+            Line = line;
         }
     }
 }

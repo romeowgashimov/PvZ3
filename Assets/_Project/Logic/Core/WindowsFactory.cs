@@ -15,6 +15,8 @@ namespace _Project.Logic.Core
             _instantiator = instantiator;
         }
 
+        //Лучше сделать ожидание await не константами, а возвращением тасков Task,
+        //а если нужно будет что-то вернуть, то добавить в параметры метода out
         public TView Create<TView, TViewModel>() where TView : Window<TViewModel>
         {
             TView window = _instantiator.InstantiatePrefabResourceForComponent<TView>($"UI Prefabs/{typeof(TView).Name}", _canvas); 
