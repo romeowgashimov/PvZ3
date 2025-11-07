@@ -1,27 +1,37 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using Zenject;
 using static _Project.Logic.Core.SlotType;
 
 namespace _Project.Logic.Core
 {
+    [RequireComponent(typeof(CanvasGroup))]
     public abstract class Plant : MonoBehaviour, IUseable
     {
-        [SerializeField] public CanvasGroup _canvasGroup;
-        [Inject] private Canvas _canvas;
-        
+        [field: SerializeField] protected float _cooldownTime;
+        [Inject] public Canvas Canvas { get; private set; }
+
         protected SlotType _slotType = Free;
-        protected Line _line;
-        protected bool _haveEnemy;
-        
-        public RectTransform _rectTransform;
+
+        public bool IsCooldown => CooldownDeltaTime > 0;
+        public float CooldownDeltaTime { get; protected set; }
+        public Line Line { get; private set; }
+        public Zombie Enemy { get; private set; }
+        public bool HasEnemy => Enemy != null;
+        public Vector3 Position => transform.position;
+        public CanvasGroup CanvasGroup { get; private set; }
+        public RectTransform RectTransform { get; private set; }
 
         public event Action<Line> OnPlaced;
         public event Action<Line> OnDead;
+        
+        protected void Awake()
+        {
+            RectTransform = GetComponent<RectTransform>();
+            CanvasGroup = GetComponent<CanvasGroup>();
 
-        private void Awake() => 
-            _rectTransform = GetComponent<RectTransform>();
+            Prepare();
+        }
 
         public void Use(Slot slot)
         {
@@ -29,7 +39,7 @@ namespace _Project.Logic.Core
                 return;
                 
             slot.ChangeCurrentPlant(this, WithPlant);
-            _line = slot.Line;
+            Line = slot.Line;
             
             OnDead += Release;
 
@@ -48,17 +58,16 @@ namespace _Project.Logic.Core
         public void Death(Line line) => 
             OnDead?.Invoke(line);
 
-        public void SetEnemy(bool zombieSpawned) => 
-            _haveEnemy = zombieSpawned;
+        public void SetEnemy(Zombie zombie)
+        {
+            if (zombie == null || zombie.Position.x - Position.x > 0)
+                Enemy = zombie;
+        }
 
+        protected virtual void Prepare() { }
+        
         public abstract void Run();
 
         public abstract void Boost();
-
-        public void OnBeginDrag(PointerEventData eventData) => 
-            _canvasGroup.blocksRaycasts = false;
-
-        public void OnDrag(PointerEventData eventData) =>
-            _rectTransform.anchoredPosition += eventData.delta / _canvas.scaleFactor;
     }
 }

@@ -25,8 +25,8 @@ namespace _Project.Logic.Core
             if (SlotType == NonFree) 
                 return;
             
-            IUseable useable = eventData.pointerDrag.GetComponent<IUseable>();
-            useable.Use(this);
+            IUseableContainer container = eventData.pointerDrag.GetComponent<IUseableContainer>();
+            container.Useable.Use(this);
         }
 
         public void Setup(SlotConfig slotConfig, Line line)

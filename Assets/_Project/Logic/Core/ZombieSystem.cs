@@ -96,7 +96,7 @@ namespace _Project.Logic.Core
                 Zombie zombie = _zombiePool.Get(typeZombie);
                 SetupZombie(zombie, typeZombie);
                 
-                await Delay(FromSeconds(Random.Range(0, 1.5f)));
+                await Delay(FromSeconds(Range(0, 1.5f)));
             }
         }
         

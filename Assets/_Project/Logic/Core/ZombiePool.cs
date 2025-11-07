@@ -38,13 +38,13 @@ namespace _Project.Logic.Core
                 ? _zombiePool[typeZombie].Pop() 
                 : _zombieFactory.Create(_zombiesIds[typeZombie]);
 
-            zombie.enabled = true;
+            zombie.gameObject.SetActive(true);
             return zombie;
         }
 
         public void Release(int typeZombie, Zombie zombie)
         {
-            zombie.enabled = false;
+            zombie.gameObject.SetActive(false);
             _zombiePool[typeZombie].Push(zombie);
         }
     }

@@ -4,14 +4,14 @@ namespace _Project.Logic.Core
 {
     public class PlantsRepository
     {
-        private List<Plant> _plants = new(20);
+        private List<Plant> _plantsInScene = new(20);
         
-        public IReadOnlyList<Plant> Plants => _plants;
+        public IReadOnlyList<Plant> PlantsInScene => _plantsInScene;
 
         public void Register(Plant plant) => 
-            _plants.Add(plant);
+            _plantsInScene.Add(plant);
         
         public void Unregister(Plant plant) => 
-            _plants.Remove(plant);
+            _plantsInScene.Remove(plant);
     }
 }

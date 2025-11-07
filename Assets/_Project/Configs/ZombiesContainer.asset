@@ -14,8 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Logic.Core.ZombiesContainer
   <ZombieConfigs>k__BackingField:
   - <ZombieId>k__BackingField: Zombie
-    <Count>k__BackingField: 10
-  - <ZombieId>k__BackingField: ZombieSunHandler
-    <Count>k__BackingField: 6
+    <Count>k__BackingField: 4
   <TimeLevelInMinuts>k__BackingField: 1
   <WaveCount>k__BackingField: 4

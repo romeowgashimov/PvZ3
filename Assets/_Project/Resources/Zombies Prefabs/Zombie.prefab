@@ -88,4 +88,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f96439a067ec4662958dc1b444dbcab6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Logic.Bootstrap.Zombie
-  _speed: 0.05
+  _speed: 0.5
+  _health: 50
+  <Damage>k__BackingField: 0

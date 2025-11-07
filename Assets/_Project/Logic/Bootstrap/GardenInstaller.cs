@@ -23,6 +23,7 @@ namespace _Project.Logic.Bootstrap
             Container.Bind<WaveCounter>().AsSingle().WithArguments(_zombiesContainer.TimeLevelInMinuts, _zombiesContainer.WaveCount);
             Container.Bind<ZombieRepository>().AsSingle();
             Container.Bind<PlantsRepository>().AsSingle();
+            Container.Bind<RunableRepository>().AsSingle().WithArguments(100);
             Container.Bind<WindowsFactory>().AsSingle().WithArguments(_rootTransform);
             Container.Bind<SlotsSystem>().AsSingle().WithArguments(_slotsRepository, _slotsContainer);
             Container.Bind<ZombieSystem>().AsSingle().WithArguments(_zombieSpawnRepository, _zombiesContainer);

@@ -68,38 +68,37 @@ namespace _Project.Logic.Core
                 plant.gameObject.SetActive(true);
             }
             else
-            {
                 plant = _plantsFactory.Create(id);
-                
-                plant.OnPlaced += Register;
-                
-                void Register(Line line)
-                {
-                    plant.OnPlaced -= Register;
-                    
-                    //Нужно находить расстояние между растением и зомби
-                    bool startCheck = _zombieRepository.TryFindZombie(line,  out Zombie _);
-                    plant.SetEnemy(startCheck);
-                    
-                    _zombieRepository.OnZombieSpawned[(int)line] += plant.SetEnemy;
-                    _plantsRepository.Register(plant);
-                }
-            
-                plant.OnDead += Unregister;
 
-                void Unregister(Line line)
-                {
-                    plant.OnDead -= Unregister;
+            plant.OnPlaced += Register;
+                
+            void Register(Line line)
+            {
+                plant.OnPlaced -= Register;
                     
-                    _zombieRepository.OnZombieSpawned[(int)line] -= plant.SetEnemy;
-                    _plantsRepository.Unregister(plant);
-                }
+                if (_zombieRepository.TryFindZombie(line, out Zombie zombie))
+                    plant.SetEnemy(zombie);
+                    
+                _zombieRepository.OnZombieSpawned[(int)line] += plant.SetEnemy;
+                _plantsRepository.Register(plant);
             }
+            
+            plant.OnDead += Unregister;
 
+            void Unregister(Line line)
+            {
+                plant.OnDead -= Unregister;
+                    
+                _zombieRepository.OnZombieSpawned[(int)line] -= plant.SetEnemy;
+                _plantsRepository.Unregister(plant);
+                    
+                Release(id, plant);
+            }
+            
             return plant;
         }
 
-        public void Release(string id, Plant currentPlant)
+        private void Release(string id, Plant currentPlant)
         {
             currentPlant.gameObject.SetActive(false);
             _plantsPool[id].Push(currentPlant);
