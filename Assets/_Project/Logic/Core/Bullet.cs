@@ -5,6 +5,7 @@ namespace _Project.Logic.Core
 {
     internal abstract class Bullet : MonoBehaviour, IRunable
     {
+        [SerializeField] protected float _speed = 2;
         [SerializeField] protected float _size = 1;
         
         protected int _damage;

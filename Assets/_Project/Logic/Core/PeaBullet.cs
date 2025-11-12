@@ -7,7 +7,6 @@ namespace _Project.Logic.Core
 {
     internal class PeaBullet : Bullet
     {
-        [SerializeField] private float _speed;
         [Inject] private ZombieRepository _zombieRepository;
         
         public override void Prepare(Plant plant)

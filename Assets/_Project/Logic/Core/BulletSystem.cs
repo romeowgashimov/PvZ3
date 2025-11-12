@@ -38,7 +38,6 @@ namespace _Project.Logic.Core
         {
             bullet.transform.position = _bulletParent.position;
             bullet.gameObject.SetActive(true);
-            bullet.enabled = true;
             
             _runableRepository.Register(bullet);
             bullet.Prepare(_plant);
@@ -54,8 +53,10 @@ namespace _Project.Logic.Core
             }
         }
         
-        private void ReleaseBullet(Bullet bullet) => 
-            bullet.enabled = false;
+        private void ReleaseBullet(Bullet bullet)
+        {
+            
+        }
 
         private void DestroyBullet(Bullet bullet) => 
             Destroy(bullet.gameObject);

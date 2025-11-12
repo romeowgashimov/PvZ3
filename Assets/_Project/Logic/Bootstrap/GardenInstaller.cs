@@ -36,7 +36,7 @@ namespace _Project.Logic.Bootstrap
             //Container.Bind<WindowsSystem>().To<OtherWindowsSystem>().AsSingle();
             
             //3 = playerConfig.CardsCount
-            Container.Bind<CurrentPlants>().AsSingle().WithArguments(1);
+            Container.Bind<CurrentPlants>().AsSingle().WithArguments(2);
             Container.Bind<GameObject>().FromInstance(_cardPrefab);
             Container.Bind<PlantsContainer>().FromInstance(_plantsContainer);
             
